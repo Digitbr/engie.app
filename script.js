@@ -8,9 +8,9 @@ const perguntas = [
     "Olá! Vamos registrar a ronda. Qual o nome da Unidade? (Ex: TAG Itapemirim, TAG TIMS, TAG Viana)",
     "Qual a data e o turno? (Ex: 14 de abril de 2026 - 06:00 às 18:00)",
     "Descreva a 1ª Ronda (setores, cadeados, ar-condicionado):",
-    "Qual o horário de Chegada e Saída da 1ª Ronda? (Ex: 09:00 09:30)",
+    "Qual o horário de Chegada da 1ª Ronda? A saída será calculada automaticamente (+30 min). (Ex: 09:00)",
     "Descreva a 2ª Ronda (ou digite 'Nenhuma'):",
-    "Qual o horário de Chegada e Saída da 2ª Ronda? (Ex: 13:00 13:30 ou 0 0 se não houver):",
+    "Qual o horário de Chegada da 2ª Ronda? (Ex: 13:00 ou digite 0 se não houver):",
     "Houve paralisações? (Descreva o motivo e duração ou digite 'Nenhuma'):",
     "Por favor, anexe as fotos da ronda no clipe ao lado (até 4 fotos). Quando terminar, digite 'GERAR' para baixar a planilha."
 ];
@@ -24,17 +24,39 @@ let dadosRelatorio = {
 // Funções de UI do Chat
 function addBotMessage(text) {
     const msgDiv = document.createElement('div');
-    msgDiv.className = "flex justify-start";
-    msgDiv.innerHTML = `<div class="bg-white text-gray-800 p-3 rounded-tr-xl rounded-br-xl rounded-bl-xl shadow-sm max-w-[85%] border-l-4 border-blue-600">${text}</div>`;
+    // Adicionamos classes de animação inicial (opacidade 0 e deslocamento) e espaçamento
+    msgDiv.className = "flex justify-start mb-4 opacity-0 translate-y-4 transition-all duration-300 ease-out";
+    msgDiv.innerHTML = `
+        <div class="flex items-end gap-2 max-w-[90%]">
+            <div class="w-8 h-8 flex-shrink-0 rounded-full bg-blue-50 flex items-center justify-center text-lg shadow-sm border border-blue-100">🤖</div>
+            <div class="bg-white text-gray-800 p-3.5 rounded-2xl rounded-bl-none shadow-md border border-gray-100 leading-relaxed text-sm md:text-base">${text}</div>
+        </div>
+    `;
     chatContainer.appendChild(msgDiv);
+    
+    // Aciona a animação de "surgimento" logo após o elemento entrar na tela
+    setTimeout(() => {
+        msgDiv.classList.remove('opacity-0', 'translate-y-4');
+    }, 10);
+
     chatContainer.scrollTop = chatContainer.scrollHeight;
 }
 
 function addUserMessage(text) {
     const msgDiv = document.createElement('div');
-    msgDiv.className = "flex justify-end";
-    msgDiv.innerHTML = `<div class="bg-blue-600 text-white p-3 rounded-tl-xl rounded-br-xl rounded-bl-xl shadow-sm max-w-[85%]">${text}</div>`;
+    msgDiv.className = "flex justify-end mb-4 opacity-0 translate-y-4 transition-all duration-300 ease-out";
+    msgDiv.innerHTML = `
+        <div class="flex items-end gap-2 max-w-[90%] flex-row-reverse">
+            <div class="w-8 h-8 flex-shrink-0 rounded-full bg-blue-600 flex items-center justify-center text-sm shadow-sm text-white">👤</div>
+            <div class="bg-gradient-to-r from-blue-600 to-blue-500 text-white p-3.5 rounded-2xl rounded-br-none shadow-md leading-relaxed text-sm md:text-base">${text}</div>
+        </div>
+    `;
     chatContainer.appendChild(msgDiv);
+
+    setTimeout(() => {
+        msgDiv.classList.remove('opacity-0', 'translate-y-4');
+    }, 10);
+
     chatContainer.scrollTop = chatContainer.scrollHeight;
 }
 
