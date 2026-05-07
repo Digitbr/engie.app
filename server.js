@@ -11,6 +11,16 @@ app.use(cors());
 app.use(express.json({ limit: '50mb' }));
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Função auxiliar para calcular horário de saída (+30 minutos)
+function calcularSaida(chegada) {
+    if (!chegada || chegada === '0' || chegada.toLowerCase() === 'nenhuma') return '';
+    try {
+        return moment(chegada, 'HH:mm').add(30, 'minutes').format('HH:mm');
+    } catch {
+        return '';
+    }
+}
+
 // Função auxiliar para calcular tempo de permanência
 function calcularPermanencia(chegada, saida) {
     if (!chegada || !saida || chegada === '0' || saida === '0') return '00:00:00';
@@ -114,10 +124,10 @@ app.post('/api/gerar-relatorio', async (req, res) => {
         sheet.getCell(`I${startRow}`).value = 'SAÍDA DA UNIDADE (2)';
         sheet.getRow(startRow).font = { bold: true };
 
-        const chegada1 = data.ronda1Horarios.split(' ')[0] || '';
-        const saida1 = data.ronda1Horarios.split(' ')[1] || '';
-        const chegada2 = data.ronda2Horarios.split(' ')[0] || '';
-        const saida2 = data.ronda2Horarios.split(' ')[1] || '';
+        const chegada1 = data.ronda1Horarios.trim() || '';
+        const saida1 = calcularSaida(chegada1);
+        const chegada2 = data.ronda2Horarios.trim() || '';
+        const saida2 = calcularSaida(chegada2);
 
         sheet.getCell(`A${startRow+1}`).value = chegada1 ? `${chegada1}:00` : '';
         sheet.getCell(`C${startRow+1}`).value = calcularPermanencia(chegada1, saida1);
@@ -156,4 +166,4 @@ if (process.env.NODE_ENV !== 'production') {
     app.listen(PORT, () => {
         console.log(`Servidor local rodando na porta ${PORT}`);
     });
-}
+});
