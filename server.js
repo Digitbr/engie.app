@@ -147,7 +147,13 @@ app.post('/api/gerar-relatorio', async (req, res) => {
     }
 });
 
-const PORT = 3000;
-app.listen(PORT, () => {
-    console.log(`Servidor rodando em http://localhost:${PORT}`);
-});
+// Exporta o app para o Vercel Serverless
+module.exports = app;
+
+// Mantém o listen apenas para rodar localmente no seu PC
+if (process.env.NODE_ENV !== 'production') {
+    const PORT = process.env.PORT || 3000;
+    app.listen(PORT, () => {
+        console.log(`Servidor local rodando na porta ${PORT}`);
+    });
+}
